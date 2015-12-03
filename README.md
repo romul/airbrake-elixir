@@ -1,6 +1,6 @@
 # Airbrake Elixir
 
-Capture exceptions and send them to the [Airbrake](http://airbrake.com) API!
+Capture exceptions and send them to the [Airbrake](http://airbrake.io) API!
 
 ## Installation
 

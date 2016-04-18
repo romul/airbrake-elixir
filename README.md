@@ -11,7 +11,7 @@ defp deps do
 end
 
 # Open up your config/config.exs (or appropriate project config)
-config :airbrake, 
+config :airbrake,
   api_key: "c191b51ee8c4feb0b50193c85d8d02a5",
   project_id: 112696
 ```

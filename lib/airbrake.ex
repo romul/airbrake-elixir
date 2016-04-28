@@ -20,6 +20,7 @@ defmodule Airbrake do
   defp notify_url do
     project_id = Application.get_env(:airbrake, :project_id)
     api_key = Application.get_env(:airbrake, :api_key)
-    "http://collect.airbrake.io/api/v3/projects/#{project_id}/notices?key=#{api_key}"
+    host = Application.get_env(:airbrake, :host)
+    "#{host}/api/v3/projects/#{project_id}/notices?key=#{api_key}"
   end
 end

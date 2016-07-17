@@ -37,9 +37,7 @@ defmodule Airbrake.Payload do
 
   defp add_context(payload, nil), do: Map.put(payload, :context, %{environment: Mix.env})
   defp add_context(payload, context) do
-    if !context[:environment] do
-      context = Map.put(context, :environment, Mix.env)
-    end
+    context = Map.put(context, :environment, context[:environment] || Mix.env)
     Map.put(payload, :context, context)
   end
 

@@ -12,9 +12,4 @@ defmodule AirbrakeTest do
       exception -> Airbrake.report(exception)
     end
   end
-
-  test "it can encode json" do
-    assert Airbrake.to_json(%{foo: 3, bar: "baz"}) ==
-      "{\"foo\":3,\"bar\":\"baz\"}"
-  end
 end

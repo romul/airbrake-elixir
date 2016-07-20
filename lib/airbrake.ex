@@ -1,25 +1,33 @@
 defmodule Airbrake do
+  use GenServer
+
+  @name __MODULE__
   @request_headers [{"Content-Type", "application/json"}]
-
-  alias Airbrake.Payload
-  use HTTPoison.Base
-
-  def report(exception, options \\ []) do
+  @project_id Application.get_env(:airbrake, :project_id)
+  @api_key Application.get_env(:airbrake, :api_key)
+  @notify_url "http://collect.airbrake.io/api/v3/projects/#{@project_id}/notices?key=#{@api_key}"
+  
+  @doc """
+  Send a report to Airbrake.
+  """
+  def report(exception, options \\ [])
+  def report(%{__exception__: true} = exception, options) when is_list(options) do
     stacktrace = System.stacktrace
-    spawn fn ->
-      post(notify_url,
-           Payload.new(exception, stacktrace, options) |> to_json,
-           @request_headers)
-    end
+    GenServer.cast(@name, {:report, exception, stacktrace, options})
+  end
+  def report(_, _) do
+    {:error, ArgumentError}
   end
 
-  def to_json(payload) do
-    Poison.encode!(payload)
+  def start_link do
+    HTTPoison.start
+    GenServer.start_link(@name, nil, [name: @name])
   end
 
-  defp notify_url do
-    project_id = Application.get_env(:airbrake, :project_id)
-    api_key = Application.get_env(:airbrake, :api_key)
-    "http://collect.airbrake.io/api/v3/projects/#{project_id}/notices?key=#{api_key}"
+  def handle_cast({:report, exception, stacktrace, options}, state) do
+    payload = Airbrake.Payload.new(exception, stacktrace, options)
+    HTTPoison.post(@notify_url, Poison.encode!(payload), @request_headers)
+    {:noreply, state}
   end
+
 end

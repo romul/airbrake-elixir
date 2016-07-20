@@ -1,2 +1,2 @@
 ExUnit.start
-Airbrake.start
+{:ok, _} = Airbrake.start_link

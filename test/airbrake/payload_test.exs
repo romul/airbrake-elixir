@@ -67,7 +67,7 @@ defmodule Airbrake.PayloadTest do
   end
 
   test "it reports the error message" do
-    assert "undefined function: Harbour.cats/1 (module Harbour is not available)" == get_error.message
+    assert "function Harbour.cats/1 is undefined (module Harbour is not available)" == get_error.message
   end
 
   test "it reports the notifier" do

@@ -7,7 +7,7 @@ Capture exceptions and send them to the [Airbrake](http://airbrake.io) API!
 ```elixir
 # Add it to your deps in your projects mix.exs
 defp deps do
-  [{:airbrake, "~> 0.1.0"}]
+  [{:airbrake, "~> 0.2"}]
 end
 
 # Open up your config/config.exs (or appropriate project config)
@@ -18,10 +18,11 @@ config :airbrake,
 
 ## Usage
 
-```elixir
-# Turn the lights on.
-Airbrake.start
 
+Start Airbrake process manually `Airbrake.start_link`
+or put `worker(Airbrake, [])` to your supervisors tree.
+
+```elixir
 # Report an exception.
 try do
   :foo = :bar

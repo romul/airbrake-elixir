@@ -35,9 +35,13 @@ defmodule Airbrake.Payload do
     Map.put payload, :errors, [error]
   end
 
-  defp add_context(payload, nil), do: Map.put(payload, :context, %{environment: Mix.env})
+  defp env do
+    :inet.gethostname |> elem(1) |> to_string
+  end
+
+  defp add_context(payload, nil), do: Map.put(payload, :context, %{environment: env()})
   defp add_context(payload, context) do
-    context = Map.put(context, :environment, context[:environment] || Mix.env)
+    context = Map.put(context, :environment, context[:environment] || env())
     Map.put(payload, :context, context)
   end
 

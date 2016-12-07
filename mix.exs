@@ -3,7 +3,7 @@ defmodule Airbrake.Mixfile do
 
   def project do
     [app: :airbrake,
-     version: "0.2.1",
+     version: "0.2.2",
      elixir: "~> 1.2",
      package: package,
      description: """
@@ -14,6 +14,7 @@ defmodule Airbrake.Mixfile do
 
   def package do
     [contributors: ["Roman Smirnov"],
+     maintainers: ["Roman Smirnov"],
      licenses: ["MIT"],
      links: %{github: "https://github.com/romul/airbrake-elixir"}]
   end
@@ -24,6 +25,7 @@ defmodule Airbrake.Mixfile do
 
   defp deps do
     [{:httpoison, "~> 0.9"},
-     {:poison, "~> 2.0"}]
+     {:poison, "~> 2.0"},
+     {:ex_doc, ">= 0.0.0", only: :dev}]
   end
 end

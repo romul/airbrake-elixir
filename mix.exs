@@ -15,7 +15,7 @@ defmodule Airbrake.Mixfile do
   def package do
     [contributors: ["Roman Smirnov"],
      maintainers: ["Roman Smirnov"],
-     licenses: ["MIT"],
+     licenses: ["LGPL"],
      links: %{github: "https://github.com/romul/airbrake-elixir"}]
   end
 

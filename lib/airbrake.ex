@@ -13,8 +13,8 @@ defmodule Airbrake do
   """
   def report(exception, options \\ [])
   def report(%{__exception__: true} = exception, options) when is_list(options) do
-    stacktrace = System.stacktrace
-    GenServer.cast(@name, {:report, exception, stacktrace, options})
+    stacktrace = options[:stacktrace] || System.stacktrace
+    GenServer.cast(@name, {:report, exception, stacktrace, Keyword.delete(options, :stacktrace)})
   end
   def report(_, _) do
     {:error, ArgumentError}

@@ -36,7 +36,7 @@ defmodule Airbrake.Payload do
   end
 
   defp env do
-    :inet.gethostname |> elem(1) |> to_string
+    System.get_env("HOST") || to_string(elem(:inet.gethostname, 1))
   end
 
   defp add_context(payload, nil), do: Map.put(payload, :context, %{environment: env()})

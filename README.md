@@ -7,7 +7,7 @@ Capture exceptions and send them to the [Airbrake](http://airbrake.io) API!
 ```elixir
 # Add it to your deps in your projects mix.exs
 defp deps do
-  [{:airbrake, "~> 0.2"}]
+  [{:airbrake, "~> 0.3.0"}]
 end
 
 # Open up your config/config.exs (or appropriate project config)

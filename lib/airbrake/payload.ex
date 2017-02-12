@@ -7,7 +7,11 @@ defmodule Airbrake.Payload do
 
   defstruct apiKey: nil, notifier: @notifier_info, errors: nil
 
-  def new(exception, stacktrace, options \\ []) do
+  def new(exception, stacktrace, options \\ [])
+  def new(%{__exception__: true} = exception, stacktrace, options) do
+    new(Airbrake.exception_info(exception), stacktrace, options)
+  end
+  def new(exception, stacktrace, options) when is_list(exception) do
     %__MODULE__{}
     |> add_error(exception,
                  stacktrace,

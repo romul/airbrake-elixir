@@ -63,7 +63,7 @@ defmodule Airbrake.PayloadTest do
   end
 
   test "it reports the error class" do
-    assert UndefinedFunctionError == get_error.type
+    assert "UndefinedFunctionError" == get_error.type
   end
 
   test "it reports the error message" do

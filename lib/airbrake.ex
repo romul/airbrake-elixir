@@ -15,7 +15,7 @@ defmodule Airbrake do
   @spec report(Exception.t | [type: String.t, message: String.t], Keyword.t) :: :ok
   def report(exception, options \\ [])
   def report(%{__exception__: true} = exception, options) when is_list(options) do
-    report([type: inspect(exception.__struct__), message: Exception.message(exception)])
+    report(exception_info(exception), options)
   end
   def report([type: _, message: _] = exception, options) when is_list(options) do
     stacktrace = options[:stacktrace] || System.stacktrace
@@ -32,6 +32,10 @@ defmodule Airbrake do
 
   def start_link do
     GenServer.start_link(@name, %{}, [name: @name])
+  end
+
+  def exception_info(exception) do
+    [type: inspect(exception.__struct__), message: Exception.message(exception)]
   end
 
   def handle_cast({:report, exception, stacktrace, options}, refs) do

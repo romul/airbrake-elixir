@@ -7,7 +7,7 @@ Capture exceptions and send them to the [Airbrake](http://airbrake.io) API!
 ```elixir
 # Add it to your deps in your projects mix.exs
 defp deps do
-  [{:airbrake, "~> 0.3.0"}]
+  [{:airbrake, github: "romul/airbrake-elixir"}]
 end
 
 # Open up your config/config.exs (or appropriate project config)
@@ -24,7 +24,17 @@ Start Airbrake process manually `Airbrake.start_link`
 or put `worker(Airbrake, [])` to your supervisors tree.
 
 
-*With Phoenix:*
+**System-wide exceptions handler**
+
+put to `config/config.exs` or to `config/prod.exs`:
+
+```elixir
+config :logger,
+  backends: [{Airbrake.LoggerBackend, :error}]
+```
+
+
+**With Phoenix:**
 
 ```elixir
 defmodule YourApp.Router do
@@ -45,12 +55,37 @@ in `web/web.ex`:
 ```
 
 
-*Custom usage example:*
+**With GenServer:**
+
+```elixir
+defmodule MyServer do
+  # use Airbrake.GenServer instead of GenServer
+  use Airbrake.GenServer
+  # ...
+end
+```
+
+
+**With any process:**
+
+```elixir
+  Airbrake.monitor(pid)
+  # or
+  Airbrake.monitor(Registered.Process.Name)
+  # or with spawn
+  spawn(fn -> 
+    :timer.sleep(500)
+    String.upcase(nil)
+  end) |> Airbrake.monitor
+```
+
+
+**Custom usage example:**
 
 ```elixir
 # Report an exception.
 try do
-  :foo = :bar
+  String.upcase(nil)
 rescue
   exception -> Airbrake.report(exception)
 end

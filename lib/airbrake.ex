@@ -12,9 +12,12 @@ defmodule Airbrake do
   @doc """
   Send a report to Airbrake.
   """
-  @spec report(Exception.t, Keyword.t) :: :ok
+  @spec report(Exception.t | [type: String.t, message: String.t], Keyword.t) :: :ok
   def report(exception, options \\ [])
   def report(%{__exception__: true} = exception, options) when is_list(options) do
+    report([type: inspect(exception.__struct__), message: Exception.message(exception)])
+  end
+  def report([type: _, message: _] = exception, options) when is_list(options) do
     stacktrace = options[:stacktrace] || System.stacktrace
     GenServer.cast(@name, {:report, exception, stacktrace, Keyword.delete(options, :stacktrace)})
   end

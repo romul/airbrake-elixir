@@ -28,8 +28,8 @@ defmodule Airbrake.Payload do
 
   defp add_exception_info(payload, exception, stacktrace) do
     error = %{
-      type: exception.__struct__,
-      message: Exception.message(exception),
+      type: exception[:type],
+      message: exception[:message],
       backtrace: format_stacktrace(stacktrace)
     }
     Map.put payload, :errors, [error]
@@ -41,7 +41,7 @@ defmodule Airbrake.Payload do
 
   defp add_context(payload, nil), do: Map.put(payload, :context, %{environment: env()})
   defp add_context(payload, context) do
-    context = Map.put(context, :environment, context[:environment] || env())
+    context = Map.put_new(context, :environment, env())
     Map.put(payload, :context, context)
   end
 
@@ -68,6 +68,21 @@ defmodule Airbrake.Payload do
           line: line_number,
           function: "#{ module }.#{ function }#{ format_args(args) }"
         }
+      string ->
+        info = Regex.named_captures(~r/(?<app>\(.*?\))\s*(?<file>.*?):(?<line>\d+):\s*(?<function>.*)\z/, string)
+        if info do
+          %{
+            file: info["file"],
+            line: String.to_integer(info["line"]),
+            function: "#{info["app"]} #{info["function"]}"
+          }
+        else
+          %{
+            file: "unknown",
+            line: 0,
+            function: string
+          }
+        end
     end
   end
 

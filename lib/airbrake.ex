@@ -7,10 +7,12 @@ defmodule Airbrake do
   @api_key Application.get_env(:airbrake, :api_key)
   @host Application.get_env(:airbrake, :host, "http://collect.airbrake.io")
   @notify_url "#{@host}/api/v3/projects/#{@project_id}/notices?key=#{@api_key}"
-  
+
+
   @doc """
   Send a report to Airbrake.
   """
+  @spec report(Exception.t, Keyword.t) :: :ok
   def report(exception, options \\ [])
   def report(%{__exception__: true} = exception, options) when is_list(options) do
     stacktrace = options[:stacktrace] || System.stacktrace
@@ -20,15 +22,35 @@ defmodule Airbrake do
     {:error, ArgumentError}
   end
 
-  def start_link do
-    HTTPoison.start
-    GenServer.start_link(@name, nil, [name: @name])
+  @spec monitor(pid | {reg_name :: atom, node :: atom} | reg_name :: atom) :: {:noreply, Map.t}
+  def monitor(pid_or_reg_name) do
+    GenServer.cast(@name, {:monitor, pid_or_reg_name})
   end
 
-  def handle_cast({:report, exception, stacktrace, options}, state) do
+  def start_link do
+    GenServer.start_link(@name, %{}, [name: @name])
+  end
+
+  def handle_cast({:report, exception, stacktrace, options}, refs) do
     payload = Airbrake.Payload.new(exception, stacktrace, options)
     HTTPoison.post(@notify_url, Poison.encode!(payload), @request_headers)
-    {:noreply, state}
+    {:noreply, refs}
   end
+
+  def handle_cast({:monitor, pid_or_reg_name}, refs) do
+    ref = Process.monitor(pid_or_reg_name)
+    refs = Map.put(refs, ref, pid_or_reg_name)
+    {:noreply, refs}
+  end
+
+  def handle_info({:DOWN, ref, :process, pid, reason}, refs) do
+    {pname, refs} = Map.pop(refs, ref)
+    message = Enum.join([process_name(pname, pid), " is down with the reason: ", inspect(reason)])
+    report(RuntimeError.exception(message))
+    {:noreply, refs}
+  end
+
+  defp process_name(pid, pid), do: "Process [#{inspect(pid)}]"
+  defp process_name(pname, pid), do: "#{inspect(pname)} [#{inspect(pid)}]"
 
 end

@@ -14,16 +14,27 @@ defmodule Airbrake.Plug do
           super(conn, opts)
         rescue
           exception ->
-            stacktrace = System.stacktrace
-
-            Airbrake.report(exception, [
-              params: conn.params,
-              session: conn.private[:plug_session],
-              stacktrace: stacktrace
-            ])
-
-            reraise exception, stacktrace
+            send_to_airbrake(conn, exception)
         end
+      end
+
+      defp send_to_airbrake(conn, exception) do
+        stacktrace = System.stacktrace
+        error = case exception do
+          %Plug.Conn.WrapperError{} ->
+            case Regex.run(~r/\*\*\s*\((.*?)\)\s*(.*?)\z/, Exception.message(exception)) do
+              [_, type, message] ->
+                [type: type, message: message]
+              _ ->
+                exception
+            end
+        end
+        Airbrake.report(error, [
+          params: conn.params,
+          session: conn.private[:plug_session],
+          stacktrace: stacktrace
+        ])
+        reraise exception, stacktrace
       end
 
     end

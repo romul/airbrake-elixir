@@ -20,7 +20,7 @@ config :airbrake,
   host: "http://collect.airbrake.io" # or your Errbit host
 
 config :logger,
-  backends: [{Airbrake.LoggerBackend, :error}]
+  backends: [{Airbrake.LoggerBackend, :error}, :console]
 ```
 
 ## General usage
@@ -42,6 +42,28 @@ end
       use Phoenix.Channel
       use Airbrake.Channel # <- put this line to your web.ex
       # ...
+```
+
+
+## Ignore some exceptions
+
+To ignore some exceptions use `:ignore` key in config:
+
+```elixir
+config :airbrake,
+  ignore: MapSet.new(["Custom.Error"])
+
+# or
+
+config :airbrake,
+  ignore: fn(type, message) ->
+    type == "Custom.Error" && String.contains?(message, "silent error")
+  end
+
+# or
+
+config :airbrake,
+  ignore: :all # to disable reporting
 ```
 
 

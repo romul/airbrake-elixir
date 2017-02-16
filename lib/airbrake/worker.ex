@@ -83,9 +83,20 @@ defmodule Airbrake.Worker do
   end
 
   defp send_report(exception, stacktrace, options) do
-    payload = Airbrake.Payload.new(exception, stacktrace, options)
-    HTTPoison.post(@notify_url, Poison.encode!(payload), @request_headers)
+    unless ignore?(exception) |> IO.inspect do
+      payload = Airbrake.Payload.new(exception, stacktrace, options)
+      HTTPoison.post(@notify_url, Poison.encode!(payload), @request_headers)
+    end
   end
+
+  defp ignore?([type: type, message: message]) do
+    ignore?(Application.get_env(:airbrake, :ignore), type, message)
+  end
+  defp ignore?(nil, _type, _message), do: false
+  defp ignore?(:all, _type, _message), do: true
+  defp ignore?(%MapSet{} = types, type, _message), do: MapSet.member?(types, type)
+  defp ignore?(fun, type, message) when is_function(fun), do: fun.(type, message)
+
 
   defp process_name(pid, pid), do: "Process [#{inspect(pid)}]"
   defp process_name(pname, pid), do: "#{inspect(pname)} [#{inspect(pid)}]"

@@ -45,14 +45,14 @@ defmodule Airbrake.Channel do
         end
       end
 
-      defp send_to_airbrake(exception, session, params, env \\ nil) do
+      defp send_to_airbrake(exception, session, params, context \\ nil) do
         stacktrace = System.stacktrace
 
-        Airbrake.report(exception, [
+        Airbrake.remember(exception, [
           params: params, 
           session: session,
           stacktrace: stacktrace,
-          env: env
+          context: context
         ])
 
         reraise exception, stacktrace

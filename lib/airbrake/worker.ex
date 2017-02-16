@@ -22,7 +22,6 @@ defmodule Airbrake.Worker do
     report(exception_info(exception), options)
   end
   def report([type: _, message: _] = exception, options) when is_list(options) do
-    IO.inspect exception
     stacktrace = options[:stacktrace] || System.stacktrace
     GenServer.cast(@name, {:report, exception, stacktrace, Keyword.delete(options, :stacktrace)})
   end

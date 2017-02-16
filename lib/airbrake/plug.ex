@@ -22,7 +22,7 @@ defmodule Airbrake.Plug do
           params: conn.params,
           session: conn.private[:plug_session],
           context: conn_data,
-          environment: environment,
+          env: environment,
           stacktrace: stacktrace
         ])
       end

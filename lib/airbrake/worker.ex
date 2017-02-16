@@ -53,7 +53,7 @@ defmodule Airbrake.Worker do
   end
 
   def handle_cast({:report, exception, stacktrace, options}, %{last_exception: {exception, details}} = state) do
-    enhanced_options = Enum.reduce([:context, :params, :session], options, fn(key, enhanced_options) ->
+    enhanced_options = Enum.reduce([:context, :params, :session, :env], options, fn(key, enhanced_options) ->
       Keyword.put(enhanced_options, key, Map.merge(options[key] || %{}, details[key] || %{}))
     end)    
     send_report(exception, stacktrace, enhanced_options)

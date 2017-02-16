@@ -83,7 +83,7 @@ defmodule Airbrake.Worker do
   end
 
   defp send_report(exception, stacktrace, options) do
-    unless ignore?(exception) |> IO.inspect do
+    unless ignore?(exception) do
       payload = Airbrake.Payload.new(exception, stacktrace, options)
       HTTPoison.post(@notify_url, Poison.encode!(payload), @request_headers)
     end

@@ -3,11 +3,12 @@ defmodule Airbrake.Mixfile do
 
   def project do
     [app: :airbrake,
-     version: "0.4.0",
+     version: "0.5.0",
      elixir: "~> 1.2",
      package: package,
      description: """
-       An Elixir notifier to the Airbrake
+       The first Elixir notifier to the Airbrake/Errbit.
+       System-wide error reporting enriched with the information from Plug and Phoenix channels.
      """,
      deps: deps]
   end

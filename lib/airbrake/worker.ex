@@ -39,7 +39,7 @@ defmodule Airbrake.Worker do
     GenServer.cast(@name, {:remember, exception, options})
   end
 
-  @spec monitor(pid | {reg_name :: atom, node :: atom} | reg_name :: atom) :: {:noreply, Map.t}
+  @spec monitor(pid | {reg_name :: atom, node :: atom} | reg_name :: atom) :: :ok
   def monitor(pid_or_reg_name) do
     GenServer.cast(@name, {:monitor, pid_or_reg_name})
   end
@@ -71,7 +71,7 @@ defmodule Airbrake.Worker do
 
   def handle_cast({:monitor, pid_or_reg_name}, state) do
     ref = Process.monitor(pid_or_reg_name)
-    state = put_in(state, [:refs, ref], pid_or_reg_name)
+    state = Map.put(state, :refs, Map.put(state.refs, ref, pid_or_reg_name))
     {:noreply, state}
   end
 

@@ -9,7 +9,7 @@ defmodule Airbrake.Payload do
 
   def new(exception, stacktrace, options \\ [])
   def new(%{__exception__: true} = exception, stacktrace, options) do
-    new(Airbrake.exception_info(exception), stacktrace, options)
+    new(Airbrake.Worker.exception_info(exception), stacktrace, options)
   end
   def new(exception, stacktrace, options) when is_list(exception) do
     %__MODULE__{}
@@ -40,12 +40,19 @@ defmodule Airbrake.Payload do
   end
 
   defp env do
+    case Application.get_env(:airbrake, :environment) do
+      nil -> hostname()
+      str_env when is_binary(str_env) -> str_env
+      fun_env when is_function(fun_env) -> fun_env.()
+    end
+  end
+
+  def hostname do
     System.get_env("HOST") || to_string(elem(:inet.gethostname, 1))
   end
 
-  defp add_context(payload, nil), do: Map.put(payload, :context, %{environment: env()})
   defp add_context(payload, context) do
-    context = Map.put_new(context, :environment, env())
+    context = Map.merge(%{environment: env(), hostname: hostname()}, context || %{})
     Map.put(payload, :context, context)
   end
 

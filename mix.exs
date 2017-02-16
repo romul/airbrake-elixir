@@ -3,7 +3,7 @@ defmodule Airbrake.Mixfile do
 
   def project do
     [app: :airbrake,
-     version: "0.3.0",
+     version: "0.4.0",
      elixir: "~> 1.2",
      package: package,
      description: """
@@ -20,7 +20,7 @@ defmodule Airbrake.Mixfile do
   end
 
   def application do
-    [applications: [:httpoison]]
+    [mod: {Airbrake, []}, applications: [:httpoison]]
   end
 
   defp deps do

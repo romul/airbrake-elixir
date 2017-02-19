@@ -79,8 +79,7 @@ defmodule Airbrake.Worker do
 
   def handle_info({:DOWN, ref, :process, pid, reason}, state) do
     {pname, refs} = Map.pop(state.refs, ref)
-    message = Enum.join([process_name(pname, pid), " is down with the reason: ", inspect(reason)])
-    report(RuntimeError.exception(message))
+    Airbrake.GenServer.handle_terminate(reason, %{process_name: process_name(pname, pid)})
     {:noreply, Map.put(state, :refs, refs)}
   end
 

@@ -1,5 +1,7 @@
 # Airbrake Elixir
 
+[![Build Status](https://travis-ci.org/romul/airbrake-elixir.svg?branch=master)](https://travis-ci.org/romul/airbrake-elixir)
+
 Capture exceptions and send them to the [Airbrake](http://airbrake.io) or to your Errbit installation!
 
 ## Installation

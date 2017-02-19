@@ -21,7 +21,7 @@ defmodule Airbrake do
     2. Add it to your deps in `mix.exs`
     
           defp deps do
-            [{:airbrake, "~> 0.5.0"}]
+            [{:airbrake, "~> 0.5.1"}]
           end
 
     3. Open up your `config/config.exs` (or appropriate project config) and put the following settings in:
@@ -61,7 +61,7 @@ defmodule Airbrake do
         # ...
       end
 
-  Add channels monitoring:
+  If you use Phoenix channels:
 
       def channel do
         quote do

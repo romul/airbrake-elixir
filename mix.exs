@@ -10,7 +10,8 @@ defmodule Airbrake.Mixfile do
        The first Elixir notifier to the Airbrake/Errbit.
        System-wide error reporting enriched with the information from Plug and Phoenix channels.
      """,
-     deps: deps]
+     deps: deps,
+     docs: [main: "Airbrake"]]
   end
 
   def package do

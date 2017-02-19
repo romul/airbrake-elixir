@@ -1,7 +1,9 @@
 defmodule Airbrake.Worker do
+  @moduledoc false
   use GenServer
 
   defmodule State do
+    @moduledoc false
     defstruct refs: %{}, last_exception: nil
   end
 

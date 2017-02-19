@@ -1,4 +1,5 @@
 defmodule Airbrake.Plug do
+  @moduledoc false
   defmacro __using__(_env) do
     quote location: :keep do
       use Plug.ErrorHandler
@@ -18,7 +19,7 @@ defmodule Airbrake.Plug do
           httpMethod: conn.method
         }
 
-        Airbrake.remember(exception, [
+        Airbrake.Worker.remember(exception, [
           params: conn.params,
           session: conn.private[:plug_session],
           context: conn_data,

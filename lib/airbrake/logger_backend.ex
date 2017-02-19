@@ -1,4 +1,5 @@
 defmodule Airbrake.LoggerBackend do
+  @moduledoc false
   use GenEvent
 
   def init({__MODULE__, _name}) do

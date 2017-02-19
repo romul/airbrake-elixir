@@ -1,4 +1,5 @@
 defmodule Airbrake.Channel do
+  @moduledoc false
   defmacro __using__(_env) do
     quote location: :keep do
       @before_compile Airbrake.Channel
@@ -48,7 +49,7 @@ defmodule Airbrake.Channel do
       defp send_to_airbrake(exception, session, params, context \\ nil) do
         stacktrace = System.stacktrace
 
-        Airbrake.remember(exception, [
+        Airbrake.Worker.remember(exception, [
           params: params, 
           session: session,
           stacktrace: stacktrace,

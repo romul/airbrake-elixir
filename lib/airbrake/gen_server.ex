@@ -1,4 +1,12 @@
 defmodule Airbrake.GenServer do
+  @moduledoc """
+  This module provides the ability to monitor workers of your gen.servers,
+  just write `use Airbrake.GenServer` instead of `use GenServer`
+  and any time when GenServer would be terminated for a some reason you will know about it.
+
+  Could be used in case when you don't want a system-wide reporting.
+  """
+
   defmacro __using__(_opts) do
     quote do
       use GenServer
@@ -6,11 +14,17 @@ defmodule Airbrake.GenServer do
     end
   end
 
+  @doc """
+  Implements [`terminate/2`](https://hexdocs.pm/elixir/1.4.1/GenServer.html#c:terminate/2) callback. It just calls `handle_terminate/1` and could be overridden.
+  """
   def terminate(reason, _state) do
     handle_terminate(reason)
     :ok
   end
 
+  @doc """
+  Implements a set of reporting rules. Could be overridden if you want to.
+  """
   def handle_terminate(:normal), do: nil
   def handle_terminate(:shutdown), do: nil
   def handle_terminate({:shutdown, _}), do: nil

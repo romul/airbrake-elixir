@@ -10,6 +10,12 @@ defmodule Airbrake.LoggerBackend do
     {:ok, :ok, state}
   end
 
+
+  def handle_event({_level, gl, _event}, state)
+      when node(gl) != node() do
+    {:ok, state}
+  end
+
   def handle_event({:error, _, {Logger, msg, _ts, _metadata}}, state) do
     try do
       err_info = parse_error_message(msg)

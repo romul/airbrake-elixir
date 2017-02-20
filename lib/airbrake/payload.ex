@@ -43,6 +43,7 @@ defmodule Airbrake.Payload do
   defp env do
     case Application.get_env(:airbrake, :environment) do
       nil -> hostname()
+      atom_env when is_atom(atom_env) -> to_string(atom_env)
       str_env when is_binary(str_env) -> str_env
       fun_env when is_function(fun_env) -> fun_env.()
     end

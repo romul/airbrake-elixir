@@ -19,7 +19,7 @@ defmodule Airbrake.Plug do
           httpMethod: conn.method
         }
 
-        Airbrake.Worker.remember(exception, [
+        Airbrake.Worker.report(exception, [
           params: conn.params,
           session: conn.private[:plug_session],
           context: conn_data,

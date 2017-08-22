@@ -9,11 +9,7 @@ defmodule Airbrake.Worker do
 
   @name __MODULE__
   @request_headers [{"Content-Type", "application/json"}]
-  @project_id Application.get_env(:airbrake, :project_id)
-  @api_key Application.get_env(:airbrake, :api_key)
-  @host Application.get_env(:airbrake, :host, "http://collect.airbrake.io")
-  @notify_url "#{@host}/api/v3/projects/#{@project_id}/notices?key=#{@api_key}"
-
+  @default_host "http://collect.airbrake.io"
 
   @doc """
   Send a report to Airbrake.
@@ -86,12 +82,12 @@ defmodule Airbrake.Worker do
   defp send_report(exception, stacktrace, options) do
     unless ignore?(exception) do
       payload = Airbrake.Payload.new(exception, stacktrace, options)
-      HTTPoison.post(@notify_url, Poison.encode!(payload), @request_headers)
+      HTTPoison.post(notify_url(), Poison.encode!(payload), @request_headers)
     end
   end
 
   defp ignore?([type: type, message: message]) do
-    ignore?(Application.get_env(:airbrake, :ignore), type, message)
+    ignore?(get_env(:ignore), type, message)
   end
   defp ignore?(nil, _type, _message), do: false
   defp ignore?(:all, _type, _message), do: true
@@ -102,4 +98,17 @@ defmodule Airbrake.Worker do
   defp process_name(pid, pid), do: "Process [#{inspect(pid)}]"
   defp process_name(pname, pid), do: "#{inspect(pname)} [#{inspect(pid)}]"
 
+  defp notify_url do
+    "#{get_env(:host, @default_host)}/api/v3/projects/#{get_env(:project_id)}/notices?key=#{get_env(:project_id)}"
+  end
+
+  defp get_env(key, default \\ nil) do
+    :airbrake
+    |> Application.get_env(key, default)
+    |> process_env()
+  end
+
+  defp process_env({:system, key, default}), do: System.get_env(key) || default
+  defp process_env({:system, key}), do: System.get_env(key)
+  defp process_env(value), do: value
 end

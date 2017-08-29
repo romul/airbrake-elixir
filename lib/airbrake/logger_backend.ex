@@ -1,6 +1,6 @@
 defmodule Airbrake.LoggerBackend do
   @moduledoc false
-  use GenEvent
+  @behaviour :gen_event
 
   def init({__MODULE__, _name}) do
     {:ok, nil}
@@ -9,7 +9,6 @@ defmodule Airbrake.LoggerBackend do
   def handle_call(_, state) do
     {:ok, :ok, state}
   end
-
 
   def handle_event({_level, gl, _event}, state)
       when node(gl) != node() do
@@ -32,6 +31,17 @@ defmodule Airbrake.LoggerBackend do
     {:ok, state}
   end
 
+  def handle_info(_message, state) do
+    {:noreply, state}
+  end
+
+  def terminate(_reason, _state) do
+    :ok
+  end
+
+  def code_change(_old, state, _extra) do
+    {:ok, state}
+  end
 
   defp parse_error_message(msg) do
     msg 

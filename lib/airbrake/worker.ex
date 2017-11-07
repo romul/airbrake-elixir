@@ -11,7 +11,7 @@ defmodule Airbrake.Worker do
   @request_headers [{"Content-Type", "application/json"}]
   @project_id Application.get_env(:airbrake, :project_id)
   @api_key Application.get_env(:airbrake, :api_key)
-  @host Application.get_env(:airbrake, :host, "http://collect.airbrake.io")
+  @host Application.get_env(:airbrake, :host, "https://airbrake.io")
   @notify_url "#{@host}/api/v3/projects/#{@project_id}/notices?key=#{@api_key}"
 
 

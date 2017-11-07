@@ -30,7 +30,7 @@ defmodule Airbrake do
             api_key: System.get_env("AIRBRAKE_API_KEY"),
             project_id: System.get_env("AIRBRAKE_PROJECT_ID"),
             environment: Mix.env,
-            host: "http://collect.airbrake.io" # or your Errbit host
+            host: "https://airbrake.io" # or your Errbit host
           
           config :logger,
             backends: [:console, {Airbrake.LoggerBackend, :error}]

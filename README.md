@@ -12,7 +12,7 @@ Capture exceptions and send them to the [Airbrake](http://airbrake.io) or to you
 
 # 2. Add it to your deps in your projects mix.exs
 defp deps do
-  [{:airbrake, "~> 0.5.1"}]
+  [{:airbrake, "~> 0.5.2"}]
 end
 
 # 3. Open up your config/config.exs (or appropriate project config)

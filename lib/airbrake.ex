@@ -21,7 +21,7 @@ defmodule Airbrake do
     2. Add it to your deps in `mix.exs`
     
           defp deps do
-            [{:airbrake, "~> 0.5.1"}]
+            [{:airbrake, "~> 0.5.2"}]
           end
 
     3. Open up your `config/config.exs` (or appropriate project config) and put the following settings in:
@@ -30,7 +30,8 @@ defmodule Airbrake do
             api_key: System.get_env("AIRBRAKE_API_KEY"),
             project_id: System.get_env("AIRBRAKE_PROJECT_ID"),
             environment: Mix.env,
-            host: "https://airbrake.io" # or your Errbit host
+            host: "https://airbrake.io", # or your Errbit host
+            filter_parameters: ["password"]
           
           config :logger,
             backends: [:console, {Airbrake.LoggerBackend, :error}]
@@ -48,6 +49,7 @@ defmodule Airbrake do
       be attached to each reported exception.
     * `:host` - (binary) use it when you have an Errbit installation.
     * `:ignore` - (MapSet of binary or function returning boolean or :all) allows to ignore some or all exceptions.
+    * `:filter_parameters` - (list of binaries) allows to filter out sensitive parameters such as passwords and tokens.
 
   For `:api_key`, `:project_id` and `:environment` you could use a
   `{:system, "VAR_NAME"}` tuple. When given a tuple like `{:system, "VAR_NAME"}`,

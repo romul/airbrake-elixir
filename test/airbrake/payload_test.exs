@@ -13,7 +13,7 @@ defmodule Airbrake.PayloadTest do
   end
 
   def get_payload(options \\ []) do
-    apply Payload, :new, List.insert_at(get_problem, -1, options)
+    apply Payload, :new, List.insert_at(get_problem(), -1, options)
   end
 
   def get_error(options \\ []) do
@@ -47,7 +47,7 @@ defmodule Airbrake.PayloadTest do
   test "it generates correct stacktraces when the current file was a script" do
     assert [%{file: "unknown", line: 0, function: _},
             %{file: "test/airbrake/payload_test.exs", line: 9, function: "Elixir.Airbrake.PayloadTest.get_problem/0"},
-            %{file: "test/airbrake/payload_test.exs", line: _, function: _} | _] = get_error.backtrace
+            %{file: "test/airbrake/payload_test.exs", line: _, function: _} | _] = get_error().backtrace
   end
 
   # NOTE: Regression test
@@ -63,16 +63,16 @@ defmodule Airbrake.PayloadTest do
   end
 
   test "it reports the error class" do
-    assert "UndefinedFunctionError" == get_error.type
+    assert "UndefinedFunctionError" == get_error().type
   end
 
   test "it reports the error message" do
-    assert "function Harbour.cats/1 is undefined (module Harbour is not available)" == get_error.message
+    assert "function Harbour.cats/1 is undefined (module Harbour is not available)" == get_error().message
   end
 
   test "it reports the notifier" do
     assert %{name: "Airbrake Elixir",
              url: "https://github.com/romul/airbrake-elixir",
-             version: _} = get_payload.notifier
+             version: _} = get_payload().notifier
   end
 end

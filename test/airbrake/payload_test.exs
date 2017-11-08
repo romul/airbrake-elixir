@@ -75,4 +75,12 @@ defmodule Airbrake.PayloadTest do
              url: "https://github.com/romul/airbrake-elixir",
              version: _} = get_payload().notifier
   end
+
+  test "it filters sensitive params" do
+    Application.put_env(:airbrake, :filter_parameters, ["password"])
+    payload = get_payload(params: %{"password" => "top_secret", "x" => "y"})
+    assert "[FILTERED]" == payload.params["password"]
+    assert "y" == payload.params["x"]
+    Application.delete_env(:airbrake, :filter_parameters)
+  end
 end

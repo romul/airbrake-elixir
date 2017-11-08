@@ -63,10 +63,22 @@ defmodule Airbrake.Payload do
   defp add_env(payload, env), do: Map.put(payload, :environment, env)
 
   defp add_params(payload, nil), do: payload
-  defp add_params(payload, params), do: Map.put(payload, :params, params)
+  defp add_params(payload, params), do: Map.put(payload, :params, filter_parameters(params))
 
   defp add_session(payload, nil), do: payload
   defp add_session(payload, session), do: Map.put(payload, :session, session)
+
+
+  defp filter_parameters(params) do
+    case Airbrake.Worker.get_env(:filter_parameters) do
+      nil ->
+        params
+      filter_params ->
+        Enum.into(params, %{}, fn {k,v} ->
+          if Enum.member?(filter_params, k), do: {k, "[FILTERED]"}, else: {k, v}
+        end)
+    end
+  end
 
   defp format_stacktrace(stacktrace) do
     Enum.map stacktrace, fn

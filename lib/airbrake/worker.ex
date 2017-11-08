@@ -103,7 +103,7 @@ defmodule Airbrake.Worker do
     "#{get_env(:host, @default_host)}/api/v3/projects/#{get_env(:project_id)}/notices?key=#{get_env(:api_key)}"
   end
 
-  defp get_env(key, default \\ nil) do
+  def get_env(key, default \\ nil) do
     :airbrake
     |> Application.get_env(key, default)
     |> process_env()

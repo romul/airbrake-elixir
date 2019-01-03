@@ -26,8 +26,10 @@ defmodule Airbrake.Mixfile do
   end
 
   defp deps do
-    [{:httpoison, "~> 0.9"},
-     {:poison, "~> 2.0 or ~> 3.0"},
-     {:ex_doc, ">= 0.0.0", only: :dev}]
+    [
+      {:httpoison, "~> 0.9"},
+      {:poison, "~> 2.0 or ~> 3.0", optional: true},
+      {:ex_doc, ">= 0.0.0", only: :dev}
+    ]
   end
 end

@@ -85,7 +85,8 @@ defmodule Airbrake.Worker do
   defp send_report(exception, stacktrace, options) do
     unless ignore?(exception) do
       payload = Airbrake.Payload.new(exception, stacktrace, options)
-      HTTPoison.post(notify_url(), Poison.encode!(payload), @request_headers)
+      json_encoder = Application.get_env(:airbrake, :json_encoder, Poison)
+      HTTPoison.post(notify_url(), json_encoder.encode!(payload), @request_headers)
     end
   end
 

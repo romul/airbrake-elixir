@@ -3,7 +3,7 @@ defmodule Airbrake.Mixfile do
 
   def project do
     [app: :airbrake,
-     version: "0.6.0",
+     version: "0.6.1",
      elixir: "~> 1.7",
      package: package(),
      description: """
@@ -29,7 +29,7 @@ defmodule Airbrake.Mixfile do
     [
       {:httpoison, "~> 0.9 or ~> 1.0"},
       {:poison, ">= 2.0.0", optional: true},
-      {:ex_doc, ">= 0.0.0", only: :dev}
+      {:ex_doc, "~> 0.19", only: :dev}
     ]
   end
 end

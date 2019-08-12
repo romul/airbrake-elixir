@@ -3,8 +3,8 @@ defmodule Airbrake.Mixfile do
 
   def project do
     [app: :airbrake,
-     version: "0.5.2",
-     elixir: "~> 1.2",
+     version: "0.6.0",
+     elixir: "~> 1.7.0",
      package: package(),
      description: """
        The first Elixir notifier to the Airbrake/Errbit.
@@ -28,7 +28,7 @@ defmodule Airbrake.Mixfile do
   defp deps do
     [
       {:httpoison, "~> 0.9 or ~> 1.0"},
-      {:poison, "~> 2.0 or ~> 3.0", optional: true},
+      {:poison, ">= 2.0.0", optional: true},
       {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end

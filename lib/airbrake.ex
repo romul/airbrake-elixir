@@ -9,7 +9,7 @@ defmodule Airbrake do
     3. Airbrake.LoggerBackend catches this exception again, but get another piece of information.
     4. Both pieces of information are merged and Airbrake.Worker sends it to Airbrake.
 
-  As additional benefit, Airbrake.LoggerBackend catches not only exceptions defined with `defexception`, 
+  As additional benefit, Airbrake.LoggerBackend catches not only exceptions defined with `defexception`,
   but `exits`, `throws` and errors in background processes as well.
 
 
@@ -19,20 +19,20 @@ defmodule Airbrake do
 
     1. Add `:airbrake` to applications list in your projects `mix.exs`
     2. Add it to your deps in `mix.exs`
-    
+
           defp deps do
             [{:airbrake, "~> 0.5.2"}]
           end
 
     3. Open up your `config/config.exs` (or appropriate project config) and put the following settings in:
-    
+
           config :airbrake,
             api_key: System.get_env("AIRBRAKE_API_KEY"),
             project_id: System.get_env("AIRBRAKE_PROJECT_ID"),
             environment: Mix.env,
             host: "https://airbrake.io", # or your Errbit host
             filter_parameters: ["password"]
-          
+
           config :logger,
             backends: [:console, {Airbrake.LoggerBackend, :error}]
 
@@ -110,7 +110,7 @@ defmodule Airbrake do
   Exceptions can be reported directly:
       Airbrake.report(ArgumentError.exception("oops"))
       #=> :ok
-  Often, you'll want to report something you either rescued or caught. 
+  Often, you'll want to report something you either rescued or caught.
 
   For rescued exceptions:
       try do

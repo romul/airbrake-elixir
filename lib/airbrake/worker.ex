@@ -84,9 +84,21 @@ defmodule Airbrake.Worker do
 
   defp send_report(exception, stacktrace, options) do
     unless ignore?(exception) do
-      payload = Airbrake.Payload.new(exception, stacktrace, options)
+      enhanced_options = build_options(options)
+      payload = Airbrake.Payload.new(exception, stacktrace, enhanced_options)
       json_encoder = Application.get_env(:airbrake, :json_encoder, Poison)
       HTTPoison.post(notify_url(), json_encoder.encode!(payload), @request_headers)
+    end
+  end
+
+  defp build_options(current_options) do
+    case get_env(:options) do
+      {mod, fun, 1} ->
+        apply(mod, fun, [current_options])
+      shared_options when is_list(shared_options) ->
+        Keyword.merge(shared_options, current_options)
+      _ ->
+        current_options
     end
   end
 

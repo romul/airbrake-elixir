@@ -69,6 +69,33 @@ config :airbrake,
   ignore: :all # to disable reporting
 ```
 
+## Shared options for reporting data to Airbrake
+
+To include with every report to Airbrake a set of optional data, include the `:options` key in the config. This can either
+be a keyword list of options or a function that returns a keyword list of options. Keyword list keys that can be used are
+`:context`, `:params`, `:session`, and `:env`.
+
+### Options function in config
+
+A function for creating options for reporting should be declared in the config as a tuple of 
+`{ModuleName, :function_name}`. This function should take as an argument a keyword list, possibly empty and should
+return a keyword list.
+
+```elixir
+config :airbrake,
+  options: {Web, :airbrake_options}
+```
+
+### Options keyword list in config
+
+When options are provided as a keyword list in the configuration and a specific call to `Airbrake.report/2` includes 
+options in its parameters, the options will be merged, with the parameters taking precedence.
+
+```elixir
+config :airbrake,
+  options: [env: %{"SOME_ENVIRONMENT_VARIABLE" => "environment variable"}]
+```
+
 
 ## Custom usage examples
 

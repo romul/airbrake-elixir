@@ -78,12 +78,12 @@ be a keyword list of options or a function that returns a keyword list of option
 ### Options function in config
 
 A function for creating options for reporting should be declared in the config as a tuple of 
-`{ModuleName, :function_name}`. This function should take as an argument a keyword list, possibly empty and should
-return a keyword list.
+`{ModuleName, :function_name, 1}`. This function should take as an argument a keyword list, possibly empty and should
+return a keyword list. The function arity is always 1.
 
 ```elixir
 config :airbrake,
-  options: {Web, :airbrake_options}
+  options: {Web, :airbrake_options, 1}
 ```
 
 ### Options keyword list in config

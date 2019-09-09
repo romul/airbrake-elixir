@@ -93,7 +93,7 @@ defmodule Airbrake.Worker do
 
   defp build_options(current_options) do
     case get_env(:options) do
-      {mod, fun} ->
+      {mod, fun, 1} ->
         apply(mod, fun, [current_options])
       shared_options when is_list(shared_options) ->
         Keyword.merge(shared_options, current_options)

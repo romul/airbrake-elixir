@@ -77,7 +77,6 @@ defmodule Airbrake do
   use Application
 
   @doc false
-  @spec start(Application.app, Application.start_type) :: :ok | {:error, term}
   def start(_type \\ :normal, _args \\ []) do
     import Supervisor.Spec, warn: false
 
@@ -89,9 +88,9 @@ defmodule Airbrake do
     Supervisor.start_link(children, opts)
   end
 
-
-  @spec report(Exception.t | [type: String.t, message: String.t], Keyword.t) :: :ok
+  @spec report(Exception.t() | [type: String.t(), message: String.t()], Keyword.t()) :: :ok
   def report(exception, options \\ [])
+
   @doc """
   Send a report to Airbrake about given exception.
 
@@ -138,7 +137,6 @@ defmodule Airbrake do
   """
   defdelegate report(exception, options), to: Airbrake.Worker
 
-
   @doc """
   Monitor exceptions in the target process.
 
@@ -157,6 +155,5 @@ defmodule Airbrake do
         String.upcase(nil)
       end) |> Airbrake.monitor
   """
-  @spec monitor(pid | {reg_name :: atom, node :: atom} | reg_name :: atom) :: :ok
   defdelegate monitor(pid_or_reg_name), to: Airbrake.Worker
 end

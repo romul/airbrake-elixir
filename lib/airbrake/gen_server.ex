@@ -19,7 +19,6 @@ defmodule Airbrake.GenServer do
     end
   end
 
-
   @doc """
   Implements a set of reporting rules based on process termination reason.
   Could be overridden if you want to.
@@ -28,12 +27,14 @@ defmodule Airbrake.GenServer do
   def handle_terminate(:normal, _), do: nil
   def handle_terminate(:shutdown, _), do: nil
   def handle_terminate({:shutdown, _}, _), do: nil
+
   def handle_terminate({err_type, stacktrace}, context) when is_atom(err_type) and is_list(stacktrace) do
     ErlangError.normalize(err_type, stacktrace) |> Airbrake.report(context: context)
   end
+
   def handle_terminate(reason, context) do
     RuntimeError.exception(inspect(reason)) |> Airbrake.report(context: context)
   end
 
-  defoverridable [handle_terminate: 2]
+  defoverridable handle_terminate: 2
 end

@@ -1,2 +1,2 @@
-ExUnit.start
-Airbrake.start
+ExUnit.start()
+Airbrake.start()

@@ -8,7 +8,7 @@ defmodule Airbrake.Channel do
 
   defmacro __before_compile__(_env) do
     quote location: :keep do
-      defoverridable [join: 3, handle_in: 3, handle_info: 2, terminate: 2]
+      defoverridable join: 3, handle_in: 3, handle_info: 2, terminate: 2
 
       def join(channel_name, msg, socket) do
         try do
@@ -47,14 +47,14 @@ defmodule Airbrake.Channel do
       end
 
       defp send_to_airbrake(exception, session, params, context \\ nil) do
-        stacktrace = System.stacktrace
+        stacktrace = System.stacktrace()
 
-        Airbrake.Worker.remember(exception, [
-          params: params, 
+        Airbrake.Worker.remember(exception,
+          params: params,
           session: session,
           stacktrace: stacktrace,
           context: context
-        ])
+        )
 
         reraise exception, stacktrace
       end

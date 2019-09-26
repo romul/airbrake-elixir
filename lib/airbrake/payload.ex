@@ -2,24 +2,28 @@ defmodule Airbrake.Payload do
   @moduledoc false
   @notifier_info %{
     name: "Airbrake Elixir",
-    version: Airbrake.Mixfile.project[:version],
-    url: Airbrake.Mixfile.project[:package][:links][:github],
+    version: Airbrake.Mixfile.project()[:version],
+    url: Airbrake.Mixfile.project()[:package][:links][:github]
   }
 
   defstruct apiKey: nil, notifier: @notifier_info, errors: nil
 
   def new(exception, stacktrace, options \\ [])
+
   def new(%{__exception__: true} = exception, stacktrace, options) do
     new(Airbrake.Worker.exception_info(exception), stacktrace, options)
   end
+
   def new(exception, stacktrace, options) when is_list(exception) do
     %__MODULE__{}
-    |> add_error(exception,
-                 stacktrace,
-                 Keyword.get(options, :context),
-                 Keyword.get(options, :env),
-                 Keyword.get(options, :params),
-                 Keyword.get(options, :session))
+    |> add_error(
+      exception,
+      stacktrace,
+      Keyword.get(options, :context),
+      Keyword.get(options, :env),
+      Keyword.get(options, :params),
+      Keyword.get(options, :session)
+    )
   end
 
   defp add_error(payload, exception, stacktrace, context, env, params, session) do
@@ -37,7 +41,8 @@ defmodule Airbrake.Payload do
       message: exception[:message],
       backtrace: format_stacktrace(stacktrace)
     }
-    Map.put payload, :errors, [error]
+
+    Map.put(payload, :errors, [error])
   end
 
   defp env do
@@ -51,7 +56,7 @@ defmodule Airbrake.Payload do
   end
 
   def hostname do
-    System.get_env("HOST") || to_string(elem(:inet.gethostname, 1))
+    System.get_env("HOST") || to_string(elem(:inet.gethostname(), 1))
   end
 
   defp add_context(payload, context) do
@@ -68,34 +73,37 @@ defmodule Airbrake.Payload do
   defp add_session(payload, nil), do: payload
   defp add_session(payload, session), do: Map.put(payload, :session, session)
 
-
   defp filter_parameters(params) do
     case Airbrake.Worker.get_env(:filter_parameters) do
       nil ->
         params
+
       filter_params ->
-        Enum.into(params, %{}, fn {k,v} ->
+        Enum.into(params, %{}, fn {k, v} ->
           if Enum.member?(filter_params, k), do: {k, "[FILTERED]"}, else: {k, v}
         end)
     end
   end
 
   defp format_stacktrace(stacktrace) do
-    Enum.map stacktrace, fn
-      ({ module, function, args, [] }) ->
+    Enum.map(stacktrace, fn
+      {module, function, args, []} ->
         %{
           file: "unknown",
           line: 0,
-          function: "#{ module }.#{ function }#{ format_args(args) }"
+          function: "#{module}.#{function}#{format_args(args)}"
         }
-      ({ module, function, args, [file: file, line: line_number] }) ->
+
+      {module, function, args, [file: file, line: line_number]} ->
         %{
-          file: file |> List.to_string,
+          file: file |> List.to_string(),
           line: line_number,
-          function: "#{ module }.#{ function }#{ format_args(args) }"
+          function: "#{module}.#{function}#{format_args(args)}"
         }
+
       string ->
         info = Regex.named_captures(~r/(?<app>\(.*?\))\s*(?<file>.*?):(?<line>\d+):\s*(?<function>.*)\z/, string)
+
         if info do
           %{
             file: info["file"],
@@ -109,15 +117,18 @@ defmodule Airbrake.Payload do
             function: string
           }
         end
-    end
+    end)
   end
 
   defp format_args(args) when is_integer(args) do
     "/#{args}"
   end
+
   defp format_args(args) when is_list(args) do
-    "(#{args
-        |> Enum.map(&(inspect(&1)))
-        |> Enum.join(", ")})"
+    "(#{
+      args
+      |> Enum.map(&inspect(&1))
+      |> Enum.join(", ")
+    })"
   end
 end

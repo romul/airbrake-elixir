@@ -2,23 +2,27 @@ defmodule Airbrake.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :airbrake,
-     version: "0.6.1",
-     elixir: "~> 1.7",
-     package: package(),
-     description: """
-       The first Elixir notifier to the Airbrake/Errbit.
-       System-wide error reporting enriched with the information from Plug and Phoenix channels.
-     """,
-     deps: deps(),
-     docs: [main: "Airbrake"]]
+    [
+      app: :airbrake,
+      version: "0.6.1",
+      elixir: "~> 1.7",
+      package: package(),
+      description: """
+        The first Elixir notifier to the Airbrake/Errbit.
+        System-wide error reporting enriched with the information from Plug and Phoenix channels.
+      """,
+      deps: deps(),
+      docs: [main: "Airbrake"]
+    ]
   end
 
   def package do
-    [contributors: ["Roman Smirnov"],
-     maintainers: ["Roman Smirnov"],
-     licenses: ["LGPL"],
-     links: %{github: "https://github.com/romul/airbrake-elixir"}]
+    [
+      contributors: ["Roman Smirnov"],
+      maintainers: ["Roman Smirnov"],
+      licenses: ["LGPL"],
+      links: %{github: "https://github.com/romul/airbrake-elixir"}
+    ]
   end
 
   def application do

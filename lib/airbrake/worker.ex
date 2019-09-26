@@ -41,6 +41,10 @@ defmodule Airbrake.Worker do
     GenServer.cast(@name, {:remember, exception, options})
   end
 
+  def remember(_, _) do
+    {:error, ArgumentError}
+  end
+
   def monitor(pid_or_reg_name) do
     GenServer.cast(@name, {:monitor, pid_or_reg_name})
   end

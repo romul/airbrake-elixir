@@ -4,11 +4,12 @@ defmodule Airbrake.WorkerTest do
   import Mox
 
   alias Airbrake.{HTTPMock, Payload}
+  alias Airbrake.Worker.State
 
   setup [:set_mox_global, :verify_on_exit!]
 
   setup do
-    start_worker()
+    worker_pid = start_worker()
 
     {exception, stacktrace} =
       try do
@@ -19,7 +20,7 @@ defmodule Airbrake.WorkerTest do
 
     on_exit(&maybe_stop_worker/0)
 
-    [exception: exception, stacktrace: stacktrace]
+    [exception: exception, stacktrace: stacktrace, worker_pid: worker_pid]
   end
 
   describe "report/1" do
@@ -49,6 +50,25 @@ defmodule Airbrake.WorkerTest do
       assert url =~ "/notices?key="
       assert decoded_http_payload == expected_payload
       assert decoded_http_payload == expected_payload
+    end
+  end
+
+  describe "remember/1" do
+    setup do
+      stub(Airbrake.HTTPMock, :post, fn _url, _payload, _headers ->
+        {:ok, %{status_code: 204}}
+      end)
+
+      :ok
+    end
+
+    test "saves exception info in state", %{exception: exception, worker_pid: worker_pid} do
+      expected_state = [type: inspect(exception.__struct__), message: Exception.message(exception)]
+
+      Airbrake.Worker.remember(exception)
+
+      assert %State{last_exception: {last_exception, options}} = :sys.get_state(worker_pid)
+      assert last_exception == expected_state
     end
   end
 

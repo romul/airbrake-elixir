@@ -6,6 +6,7 @@ defmodule Airbrake.Mixfile do
       app: :airbrake,
       version: "0.6.2",
       elixir: "~> 1.7",
+      elixirc_paths: elixirc_paths(Mix.env()),
       package: package(),
       description: """
         The first Elixir notifier to the Airbrake/Errbit.
@@ -35,6 +36,9 @@ defmodule Airbrake.Mixfile do
   def application do
     [mod: {Airbrake, []}, applications: [:httpoison]]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   defp deps do
     [

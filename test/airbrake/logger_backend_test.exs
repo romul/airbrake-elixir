@@ -11,6 +11,7 @@ defmodule Airbrake.LoggerBackendTest do
 
   setup do
     Logger.add_backend({LoggerBackend, :error})
+    Airbrake.start()
     :ok
   end
 

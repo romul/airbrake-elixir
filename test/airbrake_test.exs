@@ -10,6 +10,7 @@ defmodule AirbrakeTest do
       {:ok, %{status_code: 204}}
     end)
 
+    Airbrake.start()
     :ok
   end
 

@@ -8,6 +8,7 @@ defmodule Airbrake.Mixfile do
       elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
       package: package(),
+      aliases: aliases(),
       description: """
         The first Elixir notifier to the Airbrake/Errbit.
         System-wide error reporting enriched with the information from Plug and Phoenix channels.
@@ -47,6 +48,12 @@ defmodule Airbrake.Mixfile do
       {:poison, ">= 2.0.0", optional: true},
       {:ex_doc, "~> 0.19", only: :dev},
       {:excoveralls, "~> 0.12.0", only: :test}
+    ]
+  end
+
+  defp aliases do
+    [
+      test: "test --no-start"
     ]
   end
 end

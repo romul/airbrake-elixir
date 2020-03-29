@@ -10,6 +10,7 @@ defmodule Airbrake.Worker do
   @name __MODULE__
   @request_headers [{"Content-Type", "application/json"}]
   @default_host "https://airbrake.io"
+  @http_adapter Application.get_env(:airbrake, :http_adapter)
 
   @doc """
   Send a report to Airbrake.
@@ -96,7 +97,7 @@ defmodule Airbrake.Worker do
       enhanced_options = build_options(options)
       payload = Airbrake.Payload.new(exception, stacktrace, enhanced_options)
       json_encoder = Application.get_env(:airbrake, :json_encoder, Poison)
-      HTTPoison.post(notify_url(), json_encoder.encode!(payload), @request_headers)
+      @http_adapter.post(notify_url(), json_encoder.encode!(payload), @request_headers)
     end
   end
 

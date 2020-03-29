@@ -1,6 +1,7 @@
 defmodule Airbrake.LoggerBackend do
   @moduledoc false
-  use GenEvent
+
+  @behaviour :gen_event
 
   def init({__MODULE__, _name}) do
     {:ok, nil}

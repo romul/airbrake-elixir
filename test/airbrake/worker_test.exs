@@ -86,8 +86,12 @@ defmodule Airbrake.WorkerTest do
   defp atomize_keys(other), do: other
 
   defp start_worker do
-    {:ok, worker_pid} = Airbrake.Worker.start_link()
-    worker_pid
+    start_result = Airbrake.Worker.start_link()
+
+    case start_result do
+      {:ok, worker_pid} -> worker_pid
+      {:error, {:already_started, worker_pid}} -> worker_pid
+    end
   end
 
   defp maybe_stop_worker do

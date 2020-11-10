@@ -31,7 +31,8 @@ defmodule Airbrake do
             project_id: System.get_env("AIRBRAKE_PROJECT_ID"),
             environment: Mix.env,
             host: "https://airbrake.io", # or your Errbit host
-            filter_parameters: ["password"]
+            filter_parameters: ["password"],
+            filter_headers: ["authorization"]
 
           config :logger,
             backends: [:console, {Airbrake.LoggerBackend, :error}]
@@ -50,6 +51,7 @@ defmodule Airbrake do
     * `:host` - (binary) use it when you have an Errbit installation.
     * `:ignore` - (MapSet of binary or function returning boolean or :all) allows to ignore some or all exceptions.
     * `:filter_parameters` - (list of binaries) allows to filter out sensitive parameters such as passwords and tokens.
+    * `:filter_headers` - (list of binaries) list of attributes to be filtered from header in the environment of the payload.
 
   For `:api_key`, `:project_id` and `:environment` you could use a
   `{:system, "VAR_NAME"}` tuple. When given a tuple like `{:system, "VAR_NAME"}`,

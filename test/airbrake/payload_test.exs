@@ -92,8 +92,20 @@ defmodule Airbrake.PayloadTest do
 
   test "it filters sensitive params" do
     Application.put_env(:airbrake, :filter_parameters, ["password"])
-    payload = get_payload(params: %{"password" => "top_secret", "x" => "y"})
+
+    payload =
+      get_payload(
+        params: %{
+          "password" => "top_secret",
+          "x" => "y",
+          "variables" => %{"password" => "super_secret"},
+          "data" => [%{"password" => "classified"}]
+        }
+      )
+
     assert "[FILTERED]" == payload.params["password"]
+    assert "[FILTERED]" == payload.params["variables"]["password"]
+    assert "[FILTERED]" == payload.params["data"] |> Enum.at(0) |> Map.get("password")
     assert "y" == payload.params["x"]
     Application.delete_env(:airbrake, :filter_parameters)
   end

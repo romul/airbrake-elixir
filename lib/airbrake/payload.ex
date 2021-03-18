@@ -77,14 +77,28 @@ defmodule Airbrake.Payload do
     filter(params, Airbrake.Worker.get_env(:filter_parameters))
   end
 
-  defp filter(map, nil) do
-    map
+  defp filter(params, nil) do
+    params
   end
 
-  defp filter(map, filtered_attributes) do
-    Enum.into(map, %{}, fn {k, v} ->
-      if Enum.member?(filtered_attributes, k), do: {k, "[FILTERED]"}, else: {k, v}
-    end)
+  defp filter(params, filtered_attributes) when is_map(params) do
+    Enum.into(params, %{}, &filter_key_value(&1, filtered_attributes))
+  end
+
+  defp filter(params, filtered_attributes) when is_list(params) do
+    Enum.map(params, &filter(&1, filtered_attributes))
+  end
+
+  defp filter(params, _filtered_attributes) do
+    params
+  end
+
+  defp filter_key_value({k, v}, filtered_attributes) when is_map(v) or is_list(v) do
+    {k, filter(v, filtered_attributes)}
+  end
+
+  defp filter_key_value({k, v}, filtered_attributes) do
+    if Enum.member?(filtered_attributes, k), do: {k, "[FILTERED]"}, else: {k, v}
   end
 
   defp filter_environment(env) do
